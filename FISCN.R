@@ -12,40 +12,6 @@ FInet <- function(input.matrix,N){
   colnames(gene.feature.score)[1] <- "mutationScore"
   rownames(gene.feature.score) <- input.matrix$gene
   
-  #h2o.init()
-  
-  #h2o.input <- as.h2o(gene.feature.score)
-  
-  #bptimes <- 20
-  #matrixPredY <- data.frame(matrix(data = NA,nrow = length(Y),ncol = bptimes))
-  
-  #for (bp in 1:bptimes){
-    #model <- h2o.deeplearning(x = 2:ncol(gene.feature.score), # column numbers for predictors
-                              #y = 1,  # column number for label
-                              #training_frame = h2o.input,
-                              #standardize = FALSE,
-                              #activation = "Rectifier",
-                              #hidden = c(100), ## one hidden layers
-                              #epochs = 10,
-                              #rate = 0.005,
-                              #seed = 123)
-    
-    #predict.result <- h2o.predict(model,h2o.input)
-    #predict.y <- unlist(as.data.frame(predict.result))
-    #matrixPredY[,bp] <- predict.y
-  #}
-  
-  #meanPredY <- apply(matrixPredY,1,mean)
-  
-  ES = read.csv('esti/LAML_esti8.csv')
-  gene.feature.score$estimateFI <- ES$affect
-  
-  #N = 3000
-  #knum <- ceiling(nrow(X)/N)
-  #hc <- hclust(dist(X,method = "euclidean"), method="ward.D")
-  #clusters <- cutree(hc, k=knum)
-  #table(clusters)
-  
   M.cluster <- gene.feature.score
   M.cluster[,1:(ncol(gene.feature.score)-1)] <- input.matrix[,2:ncol(input.matrix)]
   
@@ -101,9 +67,7 @@ FInet <- function(input.matrix,N){
     M.total_finall = rbind(M.cluster.i,M.total_finall)
     
   }
-    
   
-
   M.total <- data.frame(gene = M.total_finall $gene,qValue = M.total_finall$qValue)
 
   M.total=M.total[order(as.numeric(M.total[,2]),decreasing=F),]
@@ -112,18 +76,6 @@ FInet <- function(input.matrix,N){
   M.total1 = M.total[duplicated(M.total$gene)==F,]
   
   M.total2 = M.total1$gene[which(M.total1$qValue<=0.05)]
-  
-  
-  driver_gene = read.csv('data/Census.csv')
-  length(M.total1$gene[which(M.total1$gene[1:200] %in%driver_gene$Gene.Symbol )])
-  
-  driver_gene1 = read.csv('data/NCG6_cancergenes.csv')
-  length(M.total1$gene[which(M.total1$gene[1:200] %in%driver_gene1$symbol )])
-  
-  driver_gene2 = read.csv('data/data.csv')
-  length(M.total1$gene[which(M.total1$gene[1:200] %in%driver_gene2$X2020Rule )])
-  
-  write.table (M.total2, file ="Can.csv",row.names = FALSE, col.names =TRUE, quote =FALSE)
   
   return(M.total)
 } 
