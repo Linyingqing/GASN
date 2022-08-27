@@ -4,4 +4,4 @@ run obsFIS.R
 
 run inoutMatrix.R
 
-run FInet.R
+run GASNt.R
